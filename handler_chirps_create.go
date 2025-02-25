@@ -11,7 +11,7 @@ import (
 	"github.com/t57r/Chirpy/internal/database"
 )
 
-type ChirpResource struct {
+type Chirp struct {
 	ID        uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -19,13 +19,13 @@ type ChirpResource struct {
 	UserId    uuid.UUID `json:"user_id"`
 }
 
-func (cfg *apiConfig) handlerChirpCreate(w http.ResponseWriter, r *http.Request) {
+func (cfg *apiConfig) handlerChirpsCreate(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		Body   string    `json:"body"`
 		UserId uuid.UUID `json:"user_id"`
 	}
 	type response struct {
-		ChirpResource
+		Chirp
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -51,7 +51,7 @@ func (cfg *apiConfig) handlerChirpCreate(w http.ResponseWriter, r *http.Request)
 	}
 
 	respondWithJSON(w, http.StatusCreated, response{
-		ChirpResource: ChirpResource{
+		Chirp: Chirp{
 			ID:        chirp.ID,
 			CreatedAt: chirp.CreatedAt,
 			UpdatedAt: chirp.UpdatedAt,
