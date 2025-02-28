@@ -69,6 +69,7 @@ func main() {
 	mux.HandleFunc("GET /api/chirps", apiCfg.handlerChirpsRead)
 	mux.HandleFunc("GET /api/chirps/{chirpID}", apiCfg.handlerChirpsReadSpecific)
 	mux.HandleFunc("POST /api/chirps", apiCfg.handlerChirpsCreate)
+	mux.HandleFunc("DELETE /api/chirps/{chirpID}", apiCfg.handlerChirpsDelete)
 
 	server := http.Server{
 		Handler: mux,
