@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"net/http"
@@ -90,4 +92,14 @@ func GetBearerToken(headers http.Header) (string, error) {
 		return "", errors.New("Invalid auth format, 'Bearer' is absent")
 	}
 	return token, nil
+}
+
+// MakeRefreshToken makes a random 256 bit token encoded in hex
+func MakeRefreshToken() (string, error) {
+	token := make([]byte, 32)
+	_, err := rand.Read(token)
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(token), nil
 }
