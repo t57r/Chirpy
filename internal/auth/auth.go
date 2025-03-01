@@ -83,15 +83,7 @@ func ValidateJWT(tokenString, tokenSecret string) (uuid.UUID, error) {
 
 // GetBearerToken -
 func GetBearerToken(headers http.Header) (string, error) {
-	authHeader := headers.Get("Authorization")
-	token := strings.TrimPrefix(authHeader, "Bearer ")
-	if token == "" {
-		return "", errors.New("Auth token is absent")
-	}
-	if authHeader == token {
-		return "", errors.New("Invalid auth format, 'Bearer' is absent")
-	}
-	return token, nil
+	return ExtractAuthorizationKey(headers, "Bearer")
 }
 
 // MakeRefreshToken makes a random 256 bit token encoded in hex
@@ -102,4 +94,23 @@ func MakeRefreshToken() (string, error) {
 		return "", err
 	}
 	return hex.EncodeToString(token), nil
+}
+
+// GetAPIKey extracts the API key from the Authorization header
+func GetAPIKey(headers http.Header) (string, error) {
+	return ExtractAuthorizationKey(headers, "ApiKey")
+}
+
+// ExtractAuthorizationKey - Extracts the TOKEN from the Authorization header in this format:
+// Authorization: [authPrefix] TOKEN
+func ExtractAuthorizationKey(headers http.Header, authPrefix string) (string, error) {
+	authHeader := headers.Get("Authorization")
+	token := strings.TrimPrefix(authHeader, authPrefix+" ")
+	if token == "" {
+		return "", errors.New("Auth token is absent")
+	}
+	if authHeader == token {
+		return "", errors.New("Invalid auth format, auth prefix is absent")
+	}
+	return token, nil
 }
